@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>말랑이 재활 앱 UI 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+:root{--page:#EEF1F7;--pageText:#2A2F4F;--muted:#6B7090;--line:#D5DAE8;--panel:#FFFFFF;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--page:#171A2B;--pageText:#E6E8F5;--muted:#A0A5C4;--line:#33385A;--panel:#222741}}
+:root[data-theme="dark"]{--page:#171A2B;--pageText:#E6E8F5;--muted:#A0A5C4;--line:#33385A;--panel:#222741}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--page);color:var(--pageText);font-family:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+.wrap{max-width:1060px;margin:0 auto;padding:20px 16px 40px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;margin-bottom:14px}
+.head h1{font-family:Jua,sans-serif;font-weight:400;font-size:24px;margin:0}
+.head p{margin:0;color:var(--muted);font-size:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--pageText);cursor:pointer}
+.tabs button[aria-current="true"]{background:#262A63;color:#fff;border-color:#262A63}
+button:focus-visible,input:focus-visible{outline:3px solid #FFCF3A;outline-offset:2px}
+
+.tablet{container-type:inline-size;background:#20233F;border-radius:28px;padding:14px;box-shadow:0 1px 0 rgba(0,0,0,.05)}
+.screen{position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:#DCEBFF;color:#262A63;font-family:"Gowun Dodum",sans-serif}
+.hill{position:absolute;border-radius:50%;background:#BFE9D2;z-index:0}
+.hill.a{width:80%;height:40%;left:-15%;bottom:-24%}
+.hill.b{width:70%;height:36%;right:-12%;bottom:-22%;background:#A9E2C4}
+.view{position:absolute;inset:0;display:none;z-index:1}
+.view.on{display:grid}
+.jua{font-family:Jua,sans-serif;font-weight:400}
+
+.top{display:flex;align-items:center;gap:1.6cqw;padding:2cqw 2.6cqw}
+.lv{width:7cqw;height:7cqw;border-radius:50%;background:#FFCF3A;border:.5cqw solid #fff;display:grid;place-items:center;font-family:Jua,sans-serif;font-size:2.2cqw;line-height:1;text-align:center;color:#6B4A00}
+.lv small{display:block;font-size:1.3cqw}
+.xp{flex:0 1 42cqw}
+.xpbar{height:2.6cqw;border-radius:2cqw;background:#fff;overflow:hidden;border:.35cqw solid #fff}
+.xpfill{height:100%;width:60%;background:#3FCF8E;border-radius:2cqw;transition:width .9s ease}
+.xptxt{font-size:1.5cqw;margin-top:.6cqw;color:#4A5080}
+.lock{margin-left:auto;width:4.6cqw;height:4.6cqw;border-radius:50%;border:none;background:rgba(255,255,255,.6);display:grid;place-items:center;cursor:pointer}
+.lock svg{width:2.2cqw;height:2.2cqw}
+
+.main{grid-template-rows:auto 1fr auto}
+.stage{display:grid;place-items:center;position:relative}
+.bubble{position:absolute;top:1cqw;left:50%;transform:translateX(8cqw);background:#fff;border-radius:2cqw;padding:1.2cqw 2cqw;font-size:1.9cqw;white-space:nowrap}
+.bubble:after{content:"";position:absolute;left:1.5cqw;bottom:-1.2cqw;border:.8cqw solid transparent;border-top-color:#fff;border-left-color:#fff}
+.charbox{width:26cqw}
+.charname{font-family:Jua,sans-serif;font-size:2.4cqw;text-align:center;margin-top:.4cqw}
+.cta{justify-self:center;margin-bottom:3cqw;font-family:Jua,sans-serif;font-size:3cqw;padding:1.8cqw 7cqw;border:none;border-radius:4cqw;background:#FFCF3A;color:#5A3E00;box-shadow:0 .7cqw 0 #E3A800;cursor:pointer}
+.cta:active{transform:translateY(.5cqw);box-shadow:0 .2cqw 0 #E3A800}
+.cta[disabled]{background:#fff;color:#7A7FA8;box-shadow:0 .7cqw 0 #C9D2EA;cursor:default}
+
+.char .squish{transform-origin:100px 168px;transition:transform .05s linear}
+.char .sleepEye,.char .zz,.char .sprout{display:none}
+.char.sleep .eye{display:none}
+.char.sleep .sleepEye,.char.sleep .zz{display:inline}
+.char.evolved .sprout{display:inline}
+
+.game{grid-template-rows:auto 1fr auto}
+.gtop{display:flex;align-items:center;gap:1.4cqw;padding:2cqw 2.6cqw}
+.chip{font-family:Jua,sans-serif;font-size:2.1cqw;background:#fff;border-radius:2cqw;padding:.8cqw 1.8cqw}
+.steps{display:flex;gap:.8cqw}
+.steps i{width:1.4cqw;height:1.4cqw;border-radius:50%;background:#fff;border:.3cqw solid #262A63;opacity:.35}
+.steps i.done{background:#3FCF8E;border-color:#3FCF8E;opacity:1}
+.steps i.now{background:#262A63;opacity:1}
+.timer{margin-left:auto;font-family:Jua,sans-serif;font-size:2.4cqw;background:#262A63;color:#fff;border-radius:2cqw;padding:.6cqw 1.6cqw}
+.play{display:grid;grid-template-columns:1fr 11cqw;gap:2cqw;padding:0 2.6cqw;min-height:0}
+.arena{position:relative;display:grid;place-items:center;min-height:0}
+.count{position:absolute;top:0;left:0;font-family:Jua,sans-serif;font-size:3cqw;background:rgba(255,255,255,.75);border-radius:2cqw;padding:.6cqw 1.8cqw}
+.msg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-family:Jua,sans-serif;font-size:2.6cqw;background:#fff;border-radius:2.5cqw;padding:1cqw 2.4cqw;white-space:nowrap}
+.gbot{display:flex;justify-content:flex-end;padding:1.4cqw 2.6cqw 2.4cqw}
+.next{font-family:Jua,sans-serif;font-size:2.3cqw;padding:1.2cqw 3.6cqw;border:none;border-radius:3cqw;background:#fff;color:#9AA0C4;cursor:default}
+.next.ready{background:#FFCF3A;color:#5A3E00;box-shadow:0 .6cqw 0 #E3A800;cursor:pointer}
+
+.gauge{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;gap:.8cqw}
+.gtrack{position:relative;flex:1;width:6.4cqw;border-radius:3.2cqw;background:#fff;border:.45cqw solid #fff;overflow:hidden}
+.gfill{position:absolute;left:0;right:0;bottom:0;height:0;background:#9B8CFF;border-radius:0 0 3cqw 3cqw}
+.gfill.ok{background:#3FCF8E}.gfill.over{background:#F0648F}
+.band{position:absolute;left:0;right:0;border-top:.35cqw dashed #1E8F5E;border-bottom:.35cqw dashed #1E8F5E;background:repeating-linear-gradient(135deg,rgba(63,207,142,.28) 0 .6cqw,rgba(63,207,142,.1) .6cqw 1.2cqw);display:none}
+.tline{position:absolute;left:0;right:0;border-top:.35cqw dashed #262A63;opacity:.5}
+.gval{font-family:Jua,sans-serif;font-size:2cqw}
+
+.mon{width:24cqw}
+.mon.hit{animation:hit .3s}
+@keyframes hit{0%{transform:scale(1)}30%{transform:scale(.85) rotate(-6deg);filter:brightness(1.6)}100%{transform:scale(1)}}
+.rocket{width:12cqw;transition:transform .9s cubic-bezier(.5,0,.8,.3)}
+.rocket.fly{transform:translateY(-60cqw)}
+.ring{position:absolute;right:2cqw;top:2cqw;width:9cqw;height:9cqw}
+.planet{position:absolute;top:1cqw;left:3cqw;width:9cqw;height:9cqw;border-radius:50%;background:#9B8CFF;box-shadow:inset -1.4cqw -1cqw 0 #7C6BEA}
+
+.lane{position:relative;width:100%;height:16cqw;background:rgba(255,255,255,.7);border-radius:8cqw;overflow:hidden}
+.judge{position:absolute;left:12%;top:0;bottom:0;width:.6cqw;background:#262A63;opacity:.6}
+.note{position:absolute;top:50%;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;font-family:Jua,sans-serif;color:#fff;border:.5cqw solid #fff}
+.note.w{width:7cqw;height:7cqw;background:#9B8CFF;font-size:1.8cqw}
+.note.m{width:9cqw;height:9cqw;background:#3FCF8E;font-size:2.2cqw;border-radius:2cqw}
+.note.s{width:11cqw;height:11cqw;background:#F0648F;font-size:2.6cqw;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:none}
+.note.good{opacity:0;transform:translate(-50%,-50%) scale(1.6);transition:.25s}
+.note.miss{opacity:.25}
+.legend{position:absolute;bottom:0;left:0;display:flex;gap:1.6cqw;font-size:1.6cqw;background:rgba(255,255,255,.75);border-radius:2cqw;padding:.6cqw 1.6cqw}
+
+.done{grid-template-columns:34cqw 1fr;align-items:center;gap:2cqw;padding:3cqw 4cqw}
+.done h2{font-family:Jua,sans-serif;font-weight:400;font-size:4cqw;margin:0 0 1.6cqw}
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4cqw;margin-bottom:1.8cqw}
+.res{position:relative;background:#fff;border-radius:2cqw;padding:1.4cqw;text-align:center}
+.res b{display:block;font-family:Jua,sans-serif;font-weight:400;font-size:3.4cqw}
+.res span{font-size:1.6cqw}
+.stamp{position:absolute;top:-1.4cqw;right:-1cqw;transform:rotate(12deg);background:#F0648F;color:#fff;font-family:Jua,sans-serif;font-size:1.5cqw;border-radius:1.4cqw;padding:.4cqw 1cqw}
+.xplist{list-style:none;margin:0 0 1.6cqw;padding:0;font-size:1.9cqw}
+.xplist li{display:flex;justify-content:space-between;padding:.5cqw 0;border-bottom:.2cqw dashed rgba(38,42,99,.2);opacity:0;transition:opacity .3s}
+.xplist li.show{opacity:1}
+.xplist li em{font-style:normal;font-family:Jua,sans-serif;color:#1E8F5E}
+.lvup{display:none;background:#262A63;color:#fff;border-radius:2cqw;padding:1.2cqw 2cqw;font-family:Jua,sans-serif;font-size:2.4cqw;margin-bottom:1.6cqw}
+.lvup.show{display:block}
+
+.sim{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.sim strong{font-size:15px}
+.sim .hint{color:var(--muted);font-size:13px;flex-basis:100%}
+.press{font:inherit;font-size:16px;padding:12px 22px;border-radius:14px;border:none;background:#FF86AE;color:#4A0F25;cursor:pointer;user-select:none;touch-action:none}
+.press.on{background:#E0578A;color:#fff}
+.sim input{flex:1;min-width:160px}
+.sim output{font-variant-numeric:tabular-nums;min-width:48px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>말랑이 재활 앱 UI 시안</h1>
+    <p>태블릿 가로 화면 기준 · 아래 시뮬레이터로 말랑이 쥐기를 흉내 낼 수 있어요</p>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="화면 선택"></nav>
+
+  <div class="tablet">
+    <div class="screen" id="screen">
+      <div class="hill a"></div><div class="hill b"></div>
+
+      <section class="view main on" id="v-main" aria-label="메인 화면">
+        <div class="top">
+          <div class="lv"><div><small>Lv</small><span class="lvNum">4</span></div></div>
+          <div class="xp"><div class="xpbar"><div class="xpfill"></div></div><div class="xptxt">다음 레벨까지 <span class="xpLeft">60</span></div></div>
+          <button class="lock" aria-label="보호자 모드 (길게 누르기)"><svg viewBox="0 0 24 24" fill="none" stroke="#262A63" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></button>
+        </div>
+        <div class="stage">
+          <div class="bubble" id="mainBubble">오늘도 같이 해볼까?</div>
+          <div><div class="charbox char" data-char></div><div class="charname">말랑이</div></div>
+        </div>
+        <button class="cta" id="startBtn">오늘의 재활 시작하기</button>
+      </section>
+
+      <section class="view game" id="v-g1" aria-label="1단계 몬스터 격파">
+        <div class="gtop"><span class="chip">1단계 · 몬스터 격파</span><div class="steps"><i class="now"></i><i></i><i></i></div><span class="timer" id="g1Timer">20</span></div>
+        <div class="play">
+          <div class="arena">
+            <span class="count" id="g1Count">0 / 10</span>
+            <svg class="mon" id="mon" viewBox="0 0 200 180"><path d="M60 42 L70 10 L84 38Z M140 42 L130 10 L116 38Z" fill="#7C6BEA"/><path d="M20 150C10 90 50 32 100 32S190 90 180 150C175 172 25 172 20 150Z" fill="#9B8CFF"/><path d="M62 88 L90 98 M138 88 L110 98" stroke="#262A63" stroke-width="7" stroke-linecap="round"/><circle cx="80" cy="110" r="9" fill="#262A63"/><circle cx="120" cy="110" r="9" fill="#262A63"/><path d="M84 140 Q100 130 116 140" stroke="#262A63" stroke-width="6" fill="none" stroke-linecap="round"/></svg>
+            <span class="msg" id="g1Msg">몬스터가 나타났어! 꾹 쥐었다가 놓아봐</span>
+          </div>
+          <div class="gauge" data-gauge="g1"><div class="gtrack"><div class="tline" style="bottom:50%"></div><div class="tline" style="bottom:20%"></div><div class="gfill"></div></div><span class="gval">0%</span></div>
+        </div>
+        <div class="gbot"><button class="next" data-next="g2">다음 재활</button></div>
+      </section>
+
+      <section class="view game" id="v-g2" aria-label="2단계 파워 차징">
+        <div class="gtop"><span class="chip">2단계 · 파워 차징</span><div class="steps"><i class="done"></i><i class="now"></i><i></i></div><span class="timer" id="g2Count">발사 0 / 3</span></div>
+        <div class="play">
+          <div class="arena">
+            <div class="planet"></div>
+            <svg class="ring" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#fff" stroke="#E4E9F7" stroke-width="5"/><circle id="ringArc" cx="20" cy="20" r="16" fill="none" stroke="#3FCF8E" stroke-width="5" stroke-dasharray="100.5" stroke-dashoffset="100.5" transform="rotate(-90 20 20)" stroke-linecap="round"/><text id="ringTxt" x="20" y="24" text-anchor="middle" font-size="11" font-family="Jua" fill="#262A63">3</text></svg>
+            <svg class="rocket" id="rocket" viewBox="0 0 80 160"><path d="M40 6C62 30 64 80 58 118H22C16 80 18 30 40 6Z" fill="#fff" stroke="#262A63" stroke-width="4"/><circle cx="40" cy="62" r="12" fill="#9B8CFF" stroke="#262A63" stroke-width="4"/><path d="M22 96L6 126L22 120Z M58 96L74 126L58 120Z" fill="#F0648F" stroke="#262A63" stroke-width="4" stroke-linejoin="round"/><path id="flame" d="M28 122Q40 158 52 122Z" fill="#FFCF3A" opacity=".3"/></svg>
+            <span class="msg" id="g2Msg">초록 칸까지 꾹 눌러봐</span>
+          </div>
+          <div class="gauge" data-gauge="g2" data-band="40,60"><div class="gtrack"><div class="band"></div><div class="gfill"></div></div><span class="gval">0%</span></div>
+        </div>
+        <div class="gbot"><button class="next" data-next="g3">다음 재활</button></div>
+      </section>
+
+      <section class="view game" id="v-g3" aria-label="3단계 리듬">
+        <div class="gtop"><span class="chip">3단계 · 리듬 타이밍</span><div class="steps"><i class="done"></i><i class="done"></i><i class="now"></i></div><span class="timer" id="g3Count">성공 0</span></div>
+        <div class="play">
+          <div class="arena">
+            <div class="lane" id="lane"><div class="judge"></div></div>
+            <div class="legend"><span>● 살짝</span><span>■ 보통</span><span>◆ 세게</span></div>
+          </div>
+          <div class="gauge" data-gauge="g3" data-band="15,35"><div class="gtrack"><div class="band"></div><div class="gfill"></div></div><span class="gval">0%</span></div>
+        </div>
+        <div class="gbot"><button class="next" data-next="done">다 했어요!</button></div>
+      </section>
+
+      <section class="view done" id="v-done" aria-label="게임 완료">
+        <div><div class="char" data-char data-happy></div></div>
+        <div>
+          <h2>오늘의 재활 완료!</h2>
+          <div class="results">
+            <div class="res"><b id="rMon">10</b><span>몬스터 물리침</span></div>
+            <div class="res"><b id="rRocket">3</b><span>로켓 발사</span></div>
+            <div class="res"><span class="stamp">새 기록!</span><b id="rNote">9</b><span>리듬 성공</span></div>
+          </div>
+          <ul class="xplist" id="xplist">
+            <li><span>1단계 완료</span><em>+30</em></li>
+            <li><span>2단계 완료</span><em>+30</em></li>
+            <li><span>3단계 완료</span><em>+30</em></li>
+            <li><span>오늘의 코스 완료</span><em>+50</em></li>
+            <li><span>새 기록 달성</span><em>+20</em></li>
+          </ul>
+          <div class="lvup" id="lvup">레벨 5! 말랑이가 자랐어요 🌱</div>
+          <div class="top" style="padding:0"><div class="lv"><div><small>Lv</small><span class="lvNum">4</span></div></div><div class="xp" style="flex:1"><div class="xpbar"><div class="xpfill"></div></div><div class="xptxt">다음 레벨까지 <span class="xpLeft">60</span></div></div></div>
+          <div style="margin-top:2cqw"><button class="cta" id="homeBtn" style="margin:0;font-size:2.4cqw;padding:1.4cqw 4cqw">메인으로</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="sim" aria-label="말랑이 시뮬레이터">
+    <strong>말랑이 시뮬레이터</strong>
+    <button class="press" id="press">꾹 누르고 있기</button>
+    <input type="range" id="slider" min="0" max="100" value="0" aria-label="압력 직접 조절">
+    <output id="pout">0%</output>
+    <span class="hint">버튼이나 스페이스바를 누르고 있으면 압력이 올라가고, 떼면 내려가요. 슬라이더로 직접 맞출 수도 있어요. 실제 앱에는 없는 시안 확인용 컨트롤이에요.</span>
+  </div>
+</div>
+
+<script>
+var CHAR='<svg viewBox="0 0 200 190" aria-hidden="true"><g class="squish">'+
+'<path class="sprout" d="M100 36 C96 20 100 10 100 4 M100 20 C86 8 72 12 70 20 C82 26 94 24 100 20 M100 14 C112 2 126 4 130 12 C120 20 108 18 100 14" stroke="#1E8F5E" stroke-width="4" fill="#3FCF8E"/>'+
+'<path d="M20 160C10 100 50 38 100 38S190 100 180 160C175 182 25 182 20 160Z" fill="#FF86AE"/>'+
+'<ellipse cx="70" cy="72" rx="18" ry="10" fill="#fff" opacity=".45" transform="rotate(-25 70 72)"/>'+
+'<ellipse cx="58" cy="128" rx="13" ry="8" fill="#F0648F" opacity=".55"/><ellipse cx="142" cy="128" rx="13" ry="8" fill="#F0648F" opacity=".55"/>'+
+'<g class="eye"><circle cx="76" cy="108" r="10" fill="#262A63"/><circle cx="124" cy="108" r="10" fill="#262A63"/><circle cx="79" cy="104" r="3" fill="#fff"/><circle cx="127" cy="104" r="3" fill="#fff"/></g>'+
+'<g class="sleepEye"><path d="M66 110 Q76 118 86 110 M114 110 Q124 118 134 110" stroke="#262A63" stroke-width="5" fill="none" stroke-linecap="round"/></g>'+
+'<path d="M90 132 Q100 142 110 132" stroke="#262A63" stroke-width="5" fill="none" stroke-linecap="round"/>'+
+'</g><text class="zz" x="160" y="40" font-family="Jua" font-size="26" fill="#262A63">Z z</text></svg>';
+document.querySelectorAll('[data-char]').forEach(function(el){el.innerHTML=CHAR});
+
+var views=[['main','메인'],['g1','1단계'],['g2','2단계'],['g3','3단계'],['done','완료'],['main-done','메인 (완료 후)']];
+var tabs=document.getElementById('tabs');
+views.forEach(function(v){var b=document.createElement('button');b.textContent=v[1];b.onclick=function(){go(v[0])};b.dataset.v=v[0];tabs.appendChild(b)});
+
+var S={lv:4,xp:90,need:150,doneToday:false};
+function renderXP(){document.querySelectorAll('.lvNum').forEach(function(e){e.textContent=S.lv});document.querySelectorAll('.xpfill').forEach(function(e){e.style.width=(S.xp/S.need*100)+'%'});document.querySelectorAll('.xpLeft').forEach(function(e){e.textContent=S.need-S.xp})}
+
+var cur='main';
+function go(v){
+  if(v==='main-done'){finishDay(true);v='main'}
+  else if(v==='main'&&cur!=='done'&&!S.doneToday){}
+  cur=v;
+  document.querySelectorAll('.view').forEach(function(e){e.classList.remove('on')});
+  document.getElementById('v-'+v).classList.add('on');
+  tabs.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-current',String(b.dataset.v===(v==='main'&&S.doneToday?'main-done':v)))});
+  if(v==='g1')startG1();if(v==='g2')startG2();if(v==='g3')startG3();if(v==='done')startDone();
+  renderMain();
+}
+function renderMain(){
+  var c=document.querySelector('#v-main .char');
+  c.classList.toggle('sleep',S.doneToday);c.classList.toggle('evolved',S.lv>=5);
+  document.querySelector('#v-done .char').classList.toggle('evolved',S.lv>=5);
+  var b=document.getElementById('startBtn');b.disabled=S.doneToday;
+  b.textContent=S.doneToday?'오늘 재활 완료! 내일 또 만나':'오늘의 재활 시작하기';
+  document.getElementById('mainBubble').textContent=S.doneToday?'오늘 열심히 했더니 졸려…':'오늘도 같이 해볼까?';
+  renderXP();
+}
+document.getElementById('startBtn').onclick=function(){go('g1')};
+document.getElementById('homeBtn').onclick=function(){finishDay(false);go('main')};
+document.querySelectorAll('[data-next]').forEach(function(b){b.onclick=function(){if(b.classList.contains('ready'))go(b.dataset.next)}});
+function ready(id,on){document.querySelector('#v-'+id+' .next').classList.toggle('ready',on)}
+
+var p=0,holding=false,dragging=false;
+var press=document.getElementById('press'),slider=document.getElementById('slider'),pout=document.getElementById('pout');
+function hold(on){holding=on;press.classList.toggle('on',on)}
+press.addEventListener('pointerdown',function(e){e.preventDefault();hold(true)});
+['pointerup','pointerleave','pointercancel'].forEach(function(t){press.addEventListener(t,function(){hold(false)})});
+addEventListener('keydown',function(e){if(e.code==='Space'&&e.target.tagName!=='BUTTON'&&e.target.tagName!=='INPUT'){e.preventDefault();hold(true)}});
+addEventListener('keyup',function(e){if(e.code==='Space')hold(false)});
+slider.addEventListener('input',function(){dragging=true;p=+slider.value});
+slider.addEventListener('change',function(){dragging=false});
+slider.addEventListener('pointerup',function(){dragging=false});
+
+function gauges(){
+  document.querySelectorAll('[data-gauge]').forEach(function(g){
+    var f=g.querySelector('.gfill'),band=g.dataset.band,cls='';
+    f.style.height=p+'%';g.querySelector('.gval').textContent=Math.round(p)+'%';
+    if(band){var a=band.split(',').map(Number),bd=g.querySelector('.band');bd.style.display='block';bd.style.bottom=a[0]+'%';bd.style.height=(a[1]-a[0])+'%';cls=p<a[0]?'':(p<=a[1]?'ok':'over')}
+    f.className='gfill '+cls;
+  });
+  var s=1-p*0.0022,w=1+p*0.0016;
+  document.querySelectorAll('.char .squish').forEach(function(e){e.style.transform='scale('+w+','+s+')'});
+}
+
+var G1={},G2={},G3={};
+function startG1(){G1={hits:0,armed:true,t:20,done:false};ready('g1',false);upd('g1Count','0 / 10');upd('g1Timer','20');upd('g1Msg','몬스터가 나타났어! 꾹 쥐었다가 놓아봐')}
+function tickG1(dt){if(G1.done)return;G1.t-=dt;upd('g1Timer',Math.max(0,Math.ceil(G1.t)));
+  if(G1.armed&&p>=50){G1.armed=false;G1.hits++;var m=document.getElementById('mon');m.classList.remove('hit');void m.offsetWidth;m.classList.add('hit');upd('g1Count',G1.hits+' / 10');upd('g1Msg','좋아! 이제 손을 쭉 펴봐')}
+  if(!G1.armed&&p<=20){G1.armed=true;upd('g1Msg','다시 꾹!')}
+  if(G1.hits>=10||G1.t<=0){G1.done=true;upd('g1Msg',G1.hits>=10?'몬스터를 다 물리쳤어!':'잘했어! '+G1.hits+'마리 물리쳤어');ready('g1',true)}}
+
+function startG2(){G2={n:0,h:0,cool:0,done:false};ready('g2',false);upd('g2Count','발사 0 / 3');document.getElementById('rocket').classList.remove('fly')}
+function tickG2(dt){if(G2.done)return;var r=document.getElementById('rocket'),arc=document.getElementById('ringArc');
+  if(G2.cool>0){G2.cool-=dt;if(G2.cool<=0)r.classList.remove('fly');return}
+  if(p>=40&&p<=60){G2.h+=dt;upd('g2Msg','좋아요, 그대로!')}else{G2.h=0;upd('g2Msg',p<40?'조금 더 꾹!':'살짝 힘을 빼요')}
+  arc.setAttribute('stroke-dashoffset',100.5*(1-Math.min(G2.h/3,1)));upd('ringTxt',Math.max(0,Math.ceil(3-G2.h)));
+  document.getElementById('flame').setAttribute('opacity',p>=40&&p<=60?1:.3);
+  if(G2.h>=3){G2.n++;G2.h=0;G2.cool=1.6;r.classList.add('fly');upd('g2Count','발사 '+G2.n+' / 3');upd('g2Msg','발사!');
+    if(G2.n>=3){G2.done=true;setTimeout(function(){r.classList.remove('fly');upd('g2Msg','로켓 3번 발사 성공!')},1600);ready('g2',true)}}}
+
+var TYPES={w:[15,35,'살짝'],m:[40,60,'보통'],s:[70,90,'세게']};
+function startG3(){var lane=document.getElementById('lane');lane.querySelectorAll('.note').forEach(function(n){n.remove()});G3={notes:[],spawn:0,made:0,hit:0,done:false};ready('g3',false);upd('g3Count','성공 0')}
+function tickG3(dt){if(G3.done)return;var lane=document.getElementById('lane');
+  G3.spawn-=dt;if(G3.made<12&&G3.spawn<=0){G3.spawn=1.7;G3.made++;var k=['w','m','s'][Math.floor(Math.random()*3)],el=document.createElement('div');el.className='note '+k;el.textContent=TYPES[k][2];lane.appendChild(el);G3.notes.push({k:k,x:105,el:el,j:false})}
+  var next=null;
+  G3.notes.forEach(function(n){n.x-=dt*28;n.el.style.left=n.x+'%';
+    if(!n.j&&Math.abs(n.x-12)<5){var t=TYPES[n.k];if(p>=t[0]&&p<=t[1]){n.j=true;n.el.classList.add('good');G3.hit++;upd('g3Count','성공 '+G3.hit)}}
+    if(!n.j&&n.x<7){n.j=true;n.el.classList.add('miss')}
+    if(!n.j&&!next)next=n});
+  if(next){var t=TYPES[next.k],g=document.querySelector('[data-gauge="g3"]');g.dataset.band=t[0]+','+t[1]}
+  G3.notes=G3.notes.filter(function(n){if(n.x<-10){n.el.remove();return false}return true});
+  if(G3.made>=12&&G3.notes.length===0){G3.done=true;ready('g3',true)}}
+
+function startDone(){
+  upd('rMon',G1.hits||10);upd('rRocket',G2.n||3);upd('rNote',G3.hit||9);
+  var lis=document.querySelectorAll('#xplist li'),gain=[30,30,30,50,20],i=0;
+  lis.forEach(function(l){l.classList.remove('show')});document.getElementById('lvup').classList.remove('show');
+  if(S.doneToday)return;
+  (function step(){if(i>=lis.length)return;lis[i].classList.add('show');addXP(gain[i]);i++;setTimeout(step,550)})();
+}
+function addXP(n){S.xp+=n;if(S.xp>=S.need){S.xp-=S.need;S.lv++;S.need=S.lv>=5?250:150;document.getElementById('lvup').classList.add('show')}renderMain()}
+function finishDay(skip){if(!S.doneToday&&skip){S.lv=5;S.xp=100;S.need=250}S.doneToday=true}
+function upd(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
+
+var last=performance.now();
+function loop(now){var dt=Math.min((now-last)/1000,.05);last=now;
+  if(!dragging){p+=holding?(100-p)*0.035:-p*0.09;if(p<0.3)p=0;slider.value=Math.round(p)}
+  pout.textContent=Math.round(p)+'%';gauges();
+  if(cur==='g1')tickG1(dt);if(cur==='g2')tickG2(dt);if(cur==='g3')tickG3(dt);
+  requestAnimationFrame(loop)}
+go('main');requestAnimationFrame(loop);
+</script>
+</body>
+</html>
