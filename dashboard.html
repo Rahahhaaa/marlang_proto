@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>말랑 재활 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F5FA;--surface:#FFFFFF;--ink:#262A63;--text:#2B2E45;--muted:#6C7091;--line:#E2E5F0;--soft:#EEF0F8;--good:#1E8F5E;--lilac:#7C6BEA;--pink:#E0578A;--band:rgba(30,143,94,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14172A;--surface:#1D2138;--ink:#C9CCFF;--text:#E4E6F4;--muted:#9EA3C4;--line:#2F3456;--soft:#262B48;--good:#5FD6A0;--lilac:#A89BFF;--pink:#F08AB0;--band:rgba(95,214,160,.16)}}
+:root[data-theme="dark"]{--bg:#14172A;--surface:#1D2138;--ink:#C9CCFF;--text:#E4E6F4;--muted:#9EA3C4;--line:#2F3456;--soft:#262B48;--good:#5FD6A0;--lilac:#A89BFF;--pink:#F08AB0;--band:rgba(95,214,160,.16)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:14px;line-height:1.5}
+button{font:inherit;color:inherit}
+button:focus-visible,tr:focus-visible{outline:3px solid var(--lilac);outline-offset:2px}
+.app{height:100%;display:grid;grid-template-rows:auto 1fr;gap:14px;padding:14px 18px;max-width:1500px;margin:0 auto}
+.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-family:Jua,sans-serif;font-size:20px;color:var(--ink);display:flex;align-items:center;gap:8px}
+.logo i{width:20px;height:16px;background:#FF86AE;border-radius:50% 50% 45% 45%/60% 60% 40% 40%;display:inline-block}
+.who{display:flex;gap:6px;flex-wrap:wrap;margin-left:6px}
+.tag{font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.tag b{color:var(--ink);font-weight:600}
+.today{margin-left:auto;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:1.5fr 1fr;grid-template-rows:1fr 1fr;gap:14px;min-height:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;min-height:0;min-width:0}
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.card h2{font-size:15px;font-weight:600;margin:0;color:var(--ink)}
+.cap{font-size:12px;color:var(--muted)}
+.seg{display:flex;gap:5px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:500}
+.chartbox{position:relative;flex:1;min-height:0}
+.calwrap{flex:1;min-height:0;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+.cal{display:grid;grid-template-columns:auto repeat(7,1fr);gap:5px;font-size:11px;color:var(--muted);align-items:center}
+.cal .c{aspect-ratio:1;border-radius:5px;background:var(--soft);max-height:34px}
+.cal .c.y{background:var(--good)}.cal .c.part{background:var(--good);opacity:.45}.cal .c.f{background:transparent;border:1px dashed var(--line)}
+.nums{display:grid;gap:8px}
+.num{background:var(--soft);border-radius:10px;padding:8px 14px;min-width:110px}
+.num b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.num span{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:4px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.tw{flex:1;min-height:0;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-weight:500;color:var(--muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);font-size:12px;white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover,tbody tr[aria-selected="true"]{background:var(--soft)}
+@media (max-width:900px),(max-height:560px){html,body{height:auto}.app{height:auto}.grid{grid-template-columns:1fr;grid-template-rows:none}.card{min-height:300px}.tw{overflow-x:auto}.calwrap{grid-template-columns:1fr}.nums{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <div class="logo"><i aria-hidden="true"></i>말랑 재활 대시보드</div>
+    <div class="who" id="who"></div>
+    <span class="today">2026년 9월 27일 기준</span>
+  </header>
+
+  <div class="grid">
+    <section class="card">
+      <div class="head"><h2>세션별 지표 추이</h2><div class="seg" id="seg" role="group" aria-label="지표 선택"></div></div>
+      <div class="chartbox"><canvas id="trend" role="img" aria-label="세션별 지표 추이 그래프"></canvas></div>
+    </section>
+
+    <section class="card">
+      <div class="head"><h2>참여 현황</h2><span class="cap">최근 5주</span></div>
+      <div class="calwrap">
+        <div><div class="cal" id="cal"></div>
+          <div class="legend"><span><i style="background:var(--good)"></i>완료</span><span><i style="background:var(--good);opacity:.45"></i>일부</span><span><i style="background:var(--soft)"></i>미참여</span></div></div>
+        <div class="nums" id="nums"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="head"><h2>세션 힘 곡선</h2><span class="cap" id="traceCap"></span></div>
+      <div class="chartbox"><canvas id="trace" role="img" aria-label="2단계 시도 힘 곡선"></canvas></div>
+    </section>
+
+    <section class="card">
+      <div class="head"><h2>세션 기록</h2><span class="cap">행을 누르면 힘 곡선이 바뀌어요</span></div>
+      <div class="tw"><table>
+        <thead><tr><th>날짜</th><th>시간</th><th>몬스터</th><th>발사</th><th>리듬</th><th>힘 오차</th><th>반응</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table></div>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+var TODAY=new Date(2026,8,27);
+var PT={name:'김민준',age:8,macs:'II',side:'왼손',week:3,lv:5,seed:7,skip:.2};
+var METRICS=[
+ {k:'err',t:'힘 오차',u:'%'},{k:'sd',t:'유지 흔들림',u:'%p'},{k:'cyc',t:'쥐기-놓기',u:'회'},{k:'rt',t:'반응 시간',u:'ms'},{k:'rel',t:'놓기 지연',u:'ms'}];
+var metric='err',sel=null,trendChart,traceChart;
+
+function makeSessions(p){
+  var r=rng(p.seed),out=[],n=0;
+  for(var i=p.week*7-1;i>=0;i--){
+    var d=new Date(TODAY);d.setDate(d.getDate()-i);
+    if(i<=1||r()<p.skip)continue;
+    var prog=Math.min(1,n/18),nz=function(a){return (r()-.5)*a},partial=r()<.1;
+    out.push({date:d,partial:partial,min:Math.round(9+r()*6),
+      err:+(18-7*prog+nz(3)).toFixed(1),sd:+(9.2-3.2*prog+nz(1.6)).toFixed(1),cyc:Math.max(3,Math.round(6.5+3.5*prog+nz(2))),
+      rt:Math.round(840-190*prog+nz(90)),rel:Math.round(640-210*prog+nz(80)),
+      launch:partial?1:Math.min(3,Math.round(2+prog+nz(1))),notes:partial?0:Math.round(6+4*prog+nz(3)),prog:prog,seed:Math.floor(r()*1e6)});
+    n++;
+  }
+  return out;
+}
+var S=makeSessions(PT);
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function md(d){return (d.getMonth()+1)+'/'+d.getDate()}
+
+document.getElementById('who').innerHTML=['<b>'+PT.name+'</b> '+PT.age+'세','MACS '+PT.macs,'훈련 손 '+PT.side,'프로그램 '+PT.week+'주차','캐릭터 Lv '+PT.lv].map(function(t){return '<span class="tag">'+t+'</span>'}).join('');
+
+var seg=document.getElementById('seg');
+METRICS.forEach(function(m){var b=document.createElement('button');b.textContent=m.t;b.dataset.k=m.k;b.onclick=function(){metric=m.k;renderTrend()};seg.appendChild(b)});
+
+function baseOpts(u){var g=css('--line'),t=css('--muted');return{responsive:true,maintainAspectRatio:false,animation:{duration:250},interaction:{mode:'index',intersect:false},
+  plugins:{legend:{labels:{color:t,boxWidth:10,font:{size:11,family:'IBM Plex Sans KR'}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+c.parsed.y+' '+u}}}},
+  scales:{x:{grid:{color:g},ticks:{color:t,maxRotation:0,autoSkipPadding:10,font:{size:11}}},y:{grid:{color:g},ticks:{color:t,font:{size:11}},title:{display:true,text:u,color:t,font:{size:11}}}}}}
+
+function renderTrend(){
+  seg.querySelectorAll('button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.k===metric))});
+  var m=METRICS.find(function(x){return x.k===metric}),data=S.map(function(s){return s[m.k]});
+  var ma=data.map(function(_,i){var a=data.slice(Math.max(0,i-2),i+1);return +(a.reduce(function(x,y){return x+y},0)/a.length).toFixed(1)});
+  if(trendChart)trendChart.destroy();if(!window.Chart)return;
+  trendChart=new Chart(document.getElementById('trend'),{type:'line',data:{labels:S.map(function(s){return md(s.date)}),datasets:[
+    {label:'세션 값',data:data,borderColor:css('--lilac'),backgroundColor:css('--lilac'),pointRadius:3,showLine:false},
+    {label:'3회 이동평균',data:ma,borderColor:css('--ink'),borderWidth:2.5,pointRadius:0,tension:.35}]},options:baseOpts(m.u)});
+}
+
+function renderCal(){
+  var el=document.getElementById('cal');
+  ['','월','화','수','목','금','토','일'].forEach(function(d){var s=document.createElement('span');s.textContent=d;s.style.textAlign='center';el.appendChild(s)});
+  var dow=(TODAY.getDay()+6)%7,start=new Date(TODAY);start.setDate(start.getDate()-dow-28);
+  var map={};S.forEach(function(s){map[s.date.toDateString()]=s});
+  for(var w=0;w<5;w++){var lab=document.createElement('span');lab.textContent=w===4?'이번 주':(4-w)+'주 전';lab.style.whiteSpace='nowrap';el.appendChild(lab);
+    for(var d=0;d<7;d++){var day=new Date(start);day.setDate(start.getDate()+w*7+d);var c=document.createElement('span'),s=map[day.toDateString()];
+      c.className='c'+(day>TODAY?' f':s?(s.partial?' part':' y'):'');c.title=(day.getMonth()+1)+'월 '+day.getDate()+'일';el.appendChild(c)}}
+  var wk=S.filter(function(s){return (TODAY-s.date)/864e5<=dow}).length;
+  var avgMin=Math.round(S.reduce(function(a,s){return a+s.min},0)/S.length);
+  document.getElementById('nums').innerHTML='<div class="num"><b>'+Math.min(wk,5)+' / 5일</b><span>이번 주 참여</span></div><div class="num"><b>'+S.length+'회</b><span>누적 세션</span></div><div class="num"><b>'+avgMin+'분</b><span>평균 세션 시간</span></div>';
+}
+
+function renderRows(){
+  var tb=document.getElementById('rows');tb.innerHTML='';
+  S.slice(-7).reverse().forEach(function(s){
+    var tr=document.createElement('tr');tr.tabIndex=0;tr.setAttribute('aria-selected',String(s===sel));
+    tr.innerHTML='<td>'+md(s.date)+(s.partial?' (일부)':'')+'</td><td>'+s.min+'분</td><td>'+s.cyc+'마리</td><td>'+s.launch+'회</td><td>'+s.notes+'/12</td><td>'+s.err+'%</td><td>'+s.rt+'ms</td>';
+    tr.onclick=function(){sel=s;renderRows();renderTrace()};
+    tr.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tr.onclick()}};
+    tb.appendChild(tr)});
+}
+
+function renderTrace(){
+  var r=rng(sel.seed),q=sel.prog,pts=[],t,v,over=28-16*q,osc=7-3.5*q,lag=0.65-0.25*q;
+  for(t=0;t<=10;t+=0.1){
+    if(t<1)v=0;else if(t<1.8)v=(t-1)/0.8*(50+over);else if(t<3)v=50+over*Math.exp(-(t-1.8)*2.2);
+    else if(t<7.5)v=50+osc*Math.sin(t*5.3)+(r()-.5)*osc;else if(t<7.5+lag)v=50+(r()-.5)*3;else v=Math.max(0,50*Math.exp(-(t-7.5-lag)*3.5));
+    pts.push({x:+t.toFixed(1),y:+v.toFixed(1)})}
+  document.getElementById('traceCap').textContent=md(sel.date)+' · 2단계 시도 · 초록 띠 목표 구간';
+  if(traceChart)traceChart.destroy();if(!window.Chart)return;
+  var band={id:'band',beforeDatasetsDraw:function(c){var y=c.scales.y,x=c.scales.x,ctx=c.ctx;ctx.save();ctx.fillStyle=css('--band');ctx.fillRect(x.left,y.getPixelForValue(60),x.right-x.left,y.getPixelForValue(40)-y.getPixelForValue(60));
+    ctx.setLineDash([5,4]);ctx.strokeStyle=css('--muted');ctx.beginPath();var px=x.getPixelForValue(7.5);ctx.moveTo(px,y.top);ctx.lineTo(px,y.bottom);ctx.stroke();
+    ctx.setLineDash([]);ctx.fillStyle=css('--muted');ctx.font='11px "IBM Plex Sans KR"';ctx.fillText('놓기 신호',px+5,y.top+12);ctx.restore()}};
+  var o=baseOpts('%');o.scales.x.type='linear';o.scales.x.title={display:true,text:'시간 (초)',color:css('--muted'),font:{size:11}};o.scales.y.min=0;o.scales.y.max=100;o.plugins.legend.display=false;
+  traceChart=new Chart(document.getElementById('trace'),{type:'line',data:{datasets:[{label:'상대 압력',data:pts,borderColor:css('--pink'),borderWidth:2.5,pointRadius:0,tension:.25}]},options:o,plugins:[band]});
+}
+
+sel=S[S.length-1];
+renderTrend();renderCal();renderRows();renderTrace();
+</script>
+</body>
+</html>
